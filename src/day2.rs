@@ -1,8 +1,8 @@
-use crate::util::file_io::{get_input, read_file};
+use crate::util::file_io::get_input;
 
 pub fn day2() {
     println!("day 2:");
-    let input = get_input("day2", false);
+    let input = get_input(2);
     let res = part1(&input);
     println!("part1 {res}");
     let res = part2(&input);
@@ -10,10 +10,7 @@ pub fn day2() {
 }
 
 fn line_to_vec_i32(s: &String) -> Vec<i32> {
-    s.split(" ")
-        .into_iter()
-        .map(|s| s.parse::<i32>().unwrap())
-        .collect()
+    s.split(" ").map(|s| s.parse::<i32>().unwrap()).collect()
 }
 
 fn is_positave_delta(a: i32, b: &i32) -> bool {
@@ -78,24 +75,20 @@ fn part2(input: &Vec<String>) -> i32 {
 
 #[cfg(test)]
 mod testpart2 {
-    use crate::util::file_io::get_input;
+    use crate::util::file_io::get_test_input;
 
     use super::{part1, part2};
 
-    fn get_test_input() -> Vec<String> {
-        get_input("day2", true)
-    }
-
     #[test]
     fn test_part1() {
-        let input = get_test_input();
+        let input = get_test_input(2);
         let res = part1(&input);
         assert_eq!(res, 2);
     }
 
     #[test]
     fn test_part2() {
-        let input = get_test_input();
+        let input = get_test_input(2);
         let res = part2(&input);
         assert_eq!(res, 4);
     }

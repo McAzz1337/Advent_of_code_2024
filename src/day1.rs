@@ -2,7 +2,7 @@ use crate::util::file_io::get_input;
 
 pub fn day1() {
     println!("day 1 :");
-    let input = get_input("day1", false);
+    let input = get_input(1);
     let res = part1(&input);
     println!("part1: {res}");
     let res = part2(&input);
@@ -48,11 +48,11 @@ fn count_in(x: &i32, v: &Vec<i32>) -> i32 {
 
 fn part2(input: &Vec<String>) -> i32 {
     let split: Vec<(String, String)> = input.iter().map(split_line).collect();
-    let mut left = split
+    let left = split
         .iter()
         .map(|(s, _)| s.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
-    let mut right = split
+    let right = split
         .iter()
         .map(|(_, s)| s.parse::<i32>().unwrap())
         .collect::<Vec<i32>>();
@@ -65,7 +65,7 @@ fn part2(input: &Vec<String>) -> i32 {
 
 #[cfg(test)]
 mod testpart1 {
-    use crate::util::file_io::{get_input, read_file};
+    use crate::util::file_io::get_test_input;
 
     use super::{part1, part2, split_line};
 
@@ -77,20 +77,16 @@ mod testpart1 {
         assert_eq!(res, (3.to_string(), 4.to_string()));
     }
 
-    fn get_test_input() -> Vec<String> {
-        get_input("day1", true)
-    }
-
     #[test]
     fn test_part1() {
-        let input = get_test_input();
+        let input = get_test_input(1);
         let res = part1(&input);
         assert_eq!(res, 11);
     }
 
     #[test]
     fn test_part2() {
-        let input = get_test_input();
+        let input = get_test_input(1);
         let res = part2(&input);
         assert_eq!(res, 31);
     }
