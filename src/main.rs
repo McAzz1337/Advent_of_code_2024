@@ -1,5 +1,6 @@
 pub mod day1;
 pub mod day2;
+pub mod puzzle_result;
 pub mod util;
 
 use day1::day1;

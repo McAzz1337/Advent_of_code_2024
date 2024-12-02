@@ -1,12 +1,11 @@
-use crate::util::file_io::get_input;
+use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
 pub fn day2() {
-    println!("day 2:");
     let input = get_input(2);
-    let res = part1(&input);
-    println!("part1 {res}");
-    let res = part2(&input);
-    println!("part2 {res}");
+    let mut result = PuzzleResult::<i32, i32>::new(2);
+    result.result_part_1(part1(&input));
+    result.result_part_2(part2(&input));
+    println!("{result}");
 }
 
 fn line_to_vec_i32(s: &String) -> Vec<i32> {

@@ -1,12 +1,11 @@
-use crate::util::file_io::get_input;
+use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
 pub fn day1() {
-    println!("day 1 :");
     let input = get_input(1);
-    let res = part1(&input);
-    println!("part1: {res}");
-    let res = part2(&input);
-    println!("part2: {res}");
+    let mut result = PuzzleResult::<i32, i32>::new(1);
+    result.result_part_1(part1(&input));
+    result.result_part_1(part2(&input));
+    println!("{result}");
 }
 
 fn split_line(s: &String) -> (String, String) {
