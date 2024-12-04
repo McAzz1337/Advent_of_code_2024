@@ -55,8 +55,6 @@ fn take_from_to(s: &String, start: &str, end: &str) -> (String, String) {
         let i = reg.get(0).map(|m| m.start()).unwrap();
         if let Some(reg) = end_reg.captures(s) {
             let j = reg.get(0).map(|m| m.start()).unwrap();
-            eprintln!("i {i} j {j}");
-            eprintln!("cap = {}", s[i..j].to_string());
             (s[i..j].to_string(), s[j + 5..].to_string())
         } else {
             (s[i..].to_string(), String::new())
