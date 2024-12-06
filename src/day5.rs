@@ -1,13 +1,13 @@
-use std::{collections::HashMap, usize};
+use std::collections::HashMap;
 
 use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
-pub fn day5() {
+pub fn day5() -> PuzzleResult<usize, usize> {
     let input = get_input(5);
     let mut result = PuzzleResult::<usize, usize>::new(5);
     result.result_part_1(part1(&input));
     result.result_part_2(part2(&input));
-    println!("{result}");
+    result
 }
 
 type Rule = (usize, usize);

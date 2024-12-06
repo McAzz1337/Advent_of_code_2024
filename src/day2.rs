@@ -1,29 +1,31 @@
+use std::{isize, usize};
+
 use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
-pub fn day2() {
+pub fn day2() -> PuzzleResult<usize, usize> {
     let input = get_input(2);
-    let mut result = PuzzleResult::<i32, i32>::new(2);
+    let mut result = PuzzleResult::<usize, usize>::new(2);
     result.result_part_1(part1(&input));
     result.result_part_2(part2(&input));
-    println!("{result}");
+    result
 }
 
-fn line_to_vec_i32(s: &String) -> Vec<i32> {
-    s.split(" ").map(|s| s.parse::<i32>().unwrap()).collect()
+fn line_to_vec_usize(s: &String) -> Vec<usize> {
+    s.split(" ").map(|s| s.parse::<usize>().unwrap()).collect()
 }
 
-fn is_positave_delta(a: i32, b: &i32) -> bool {
-    a - *b >= 0
+fn is_positave_delta(a: usize, b: &usize) -> bool {
+    a as isize - *b as isize >= 0
 }
 
-fn is_safe(report: &Vec<i32>) -> bool {
+fn is_safe(report: &Vec<usize>) -> bool {
     let delta = is_positave_delta(report[0], &report[1]);
-    let same = |a: i32, b: &i32| {
+    let same = |a: usize, b: &usize| {
         let delta1 = is_positave_delta(a, b);
         delta == delta1
     };
-    let diff = |a: i32, b: &i32| {
-        let diff = (a - *b).abs();
+    let diff = |a: usize, b: &usize| {
+        let diff = (a as isize - *b as isize).abs();
         diff > 0 && diff < 4
     };
     report
@@ -34,13 +36,13 @@ fn is_safe(report: &Vec<i32>) -> bool {
         .all(|b| b)
 }
 
-fn part1(input: &Vec<String>) -> i32 {
-    let reports: Vec<Vec<i32>> = input.iter().map(line_to_vec_i32).collect();
-    reports.iter().map(is_safe).filter(|b| *b).count() as i32
+fn part1(input: &Vec<String>) -> usize {
+    let reports: Vec<Vec<usize>> = input.iter().map(line_to_vec_usize).collect();
+    reports.iter().map(is_safe).filter(|b| *b).count()
 }
 
-fn try_make_safe(report: &Vec<i32>) -> Vec<i32> {
-    let safe: Vec<Vec<i32>> = (0..report.len())
+fn try_make_safe(report: &Vec<usize>) -> Vec<usize> {
+    let safe: Vec<Vec<usize>> = (0..report.len())
         .into_iter()
         .map(|i| {
             let mut report = report.clone();
@@ -59,7 +61,7 @@ fn try_make_safe(report: &Vec<i32>) -> Vec<i32> {
     }
 }
 
-fn make_safe(report: &Vec<i32>) -> Vec<i32> {
+fn make_safe(report: &Vec<usize>) -> Vec<usize> {
     if is_safe(report) {
         report.clone()
     } else {
@@ -67,9 +69,9 @@ fn make_safe(report: &Vec<i32>) -> Vec<i32> {
     }
 }
 
-fn part2(input: &Vec<String>) -> i32 {
-    let reports: Vec<Vec<i32>> = input.iter().map(line_to_vec_i32).collect();
-    reports.iter().map(make_safe).filter(is_safe).count() as i32
+fn part2(input: &Vec<String>) -> usize {
+    let reports: Vec<Vec<usize>> = input.iter().map(line_to_vec_usize).collect();
+    reports.iter().map(make_safe).filter(is_safe).count()
 }
 
 #[cfg(test)]

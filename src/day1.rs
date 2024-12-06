@@ -1,11 +1,13 @@
+use std::usize;
+
 use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
-pub fn day1() {
+pub fn day1() -> PuzzleResult<usize, usize>         {
     let input = get_input(1);
-    let mut result = PuzzleResult::<i32, i32>::new(1);
+    let mut result = PuzzleResult::<usize, usize>::new(1);
     result.result_part_1(part1(&input));
     result.result_part_1(part2(&input));
-    println!("{result}");
+    result
 }
 
 fn split_line(s: &String) -> (String, String) {
@@ -18,7 +20,7 @@ fn split_line(s: &String) -> (String, String) {
     (left, right)
 }
 
-fn part1(input: &Vec<String>) -> i32 {
+fn part1(input: &Vec<String>) -> usize {
     let split = input
         .iter()
         .map(split_line)
@@ -26,35 +28,35 @@ fn part1(input: &Vec<String>) -> i32 {
 
     let mut left = split
         .iter()
-        .map(|(s, _)| s.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|(s, _)| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
     let mut right = split
         .iter()
-        .map(|(_, s)| s.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|(_, s)| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
     left.sort();
     right.sort();
 
     left.iter()
         .zip(right.iter())
-        .map(|(a, b)| (a - b).abs())
-        .sum::<i32>()
+        .map(|(a, b)| (*a as isize - *b as isize).abs() as usize)
+        .sum()
 }
 
-fn count_in(x: &i32, v: &Vec<i32>) -> i32 {
-    v.iter().filter(|y| *y == x).count() as i32
+fn count_in(x: &usize, v: &Vec<usize>) -> usize {
+    v.iter().filter(|y| *y == x).count()
 }
 
-fn part2(input: &Vec<String>) -> i32 {
+fn part2(input: &Vec<String>) -> usize {
     let split: Vec<(String, String)> = input.iter().map(split_line).collect();
     let left = split
         .iter()
-        .map(|(s, _)| s.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|(s, _)| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
     let right = split
         .iter()
-        .map(|(_, s)| s.parse::<i32>().unwrap())
-        .collect::<Vec<i32>>();
+        .map(|(_, s)| s.parse::<usize>().unwrap())
+        .collect::<Vec<usize>>();
 
     left.iter()
         .map(|x| (x, count_in(x, &right)))

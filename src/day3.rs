@@ -1,16 +1,18 @@
+use std::usize;
+
 use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
 use regex::Regex;
 
-pub fn day3() {
+pub fn day3() -> PuzzleResult<usize, usize> {
     let input = get_input(3);
-    let mut result = PuzzleResult::<i32, i32>::new(3);
+    let mut result = PuzzleResult::<usize, usize>::new(3);
     result.result_part_1(part1(&input));
     result.result_part_2(part2(&input));
-    println!("{result}");
+    result
 }
 
-fn extract_numbers(s: &str) -> (i32, String) {
+fn extract_numbers(s: &str) -> (usize, String) {
     let regex = Regex::new(r"mul\(\d+,\d+\)").unwrap();
     if let Some(reg) = regex.captures(s) {
         let m = reg
@@ -21,10 +23,10 @@ fn extract_numbers(s: &str) -> (i32, String) {
         let start = m.find("(").unwrap() + 1;
         let end = m.find(")").unwrap();
         let m = &m[start..end];
-        let nums: Vec<i32> = m
+        let nums: Vec<usize> = m
             .split(",")
             .into_iter()
-            .map(|s| s.parse::<i32>().unwrap())
+            .map(|s| s.parse::<usize>().unwrap())
             .collect();
         let end = reg.get(0).map(|m| m.end()).unwrap();
         (nums[0] * nums[1], s[end..].to_string())
@@ -33,7 +35,7 @@ fn extract_numbers(s: &str) -> (i32, String) {
     }
 }
 
-fn process_line(s: &String) -> i32 {
+fn process_line(s: &String) -> usize {
     let mut s = s.clone();
     let mut acc = 0;
     while !s.is_empty() {
@@ -44,7 +46,7 @@ fn process_line(s: &String) -> i32 {
     acc
 }
 
-fn part1(input: &Vec<String>) -> i32 {
+fn part1(input: &Vec<String>) -> usize {
     input.iter().map(process_line).sum()
 }
 
@@ -75,7 +77,7 @@ fn get_enabled_sections(mut s: String) -> String {
     res
 }
 
-fn part2(input: &Vec<String>) -> i32 {
+fn part2(input: &Vec<String>) -> usize {
     let input = input.iter().fold(String::new(), |a, b| a + b.as_str());
     let input = get_enabled_sections(input);
     process_line(&input)

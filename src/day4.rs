@@ -1,13 +1,11 @@
-use std::{io::empty, isize, usize};
-
 use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
 
-pub fn day4() {
+pub fn day4() -> PuzzleResult<usize, usize> {
     let input = get_input(4);
     let mut result = PuzzleResult::<usize, usize>::new(4);
     result.result_part_1(part1(&input));
     result.result_part_2(part2(&input));
-    println!("{result}");
+    result
 }
 
 type Pos = (usize, usize);
