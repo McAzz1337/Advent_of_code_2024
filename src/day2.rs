@@ -73,7 +73,7 @@ fn part2(input: &Vec<String>) -> i32 {
 }
 
 #[cfg(test)]
-mod testpart2 {
+mod tests {
     use crate::util::file_io::get_test_input;
 
     use super::{part1, part2};
