@@ -39,14 +39,14 @@ where
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let result1 = self.result_part_1.clone().map_or_else(
-            || "part 1: To be solved".to_string(),
-            |x| format!("part 1: {}", x.to_string()),
+            || "PART 1: TO BE SOLVED".to_string(),
+            |x| format!("PART 1: {}", x.to_string()),
         );
         let result2 = self.result_part_2.clone().map_or_else(
-            || "part 2: To be solved".to_string(),
-            |x| format!("part 2: {}", x.to_string()),
+            || "PART 2: TO BE SOLVED".to_string(),
+            |x| format!("PART 2: {}", x.to_string()),
         );
-        let output = String::from("-------day ")
+        let output = String::from("-------DAY ")
             + self.day.to_string().as_str()
             + "-------\n\t"
             + result1.as_str()
