@@ -1,4 +1,6 @@
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{
+    puzzle_result::PuzzleResult, util::file_io::get_input, util::util::Grid, util::util::to_matrix,
+};
 
 pub fn day4() -> PuzzleResult<usize, usize> {
     let input = get_input(4);
@@ -10,11 +12,6 @@ pub fn day4() -> PuzzleResult<usize, usize> {
 
 type Pos = (usize, usize);
 type PosOption = (Option<usize>, Option<usize>);
-type Grid = Vec<Vec<char>>;
-
-fn to_matrix(v: &Vec<String>) -> Grid {
-    v.iter().map(|s| s.chars().collect()).collect()
-}
 
 fn check<F>(mat: &Grid, term: &str, pos: Pos, step: F) -> Option<String>
 where
