@@ -1,13 +1,8 @@
-use std::{isize, usize};
+use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
 
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
-
-pub fn day2() -> PuzzleResult<usize, usize> {
+pub fn day2() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(2);
-    let mut result = PuzzleResult::<usize, usize>::new(2);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::new(2, input, Some(part1), Some(part2))
 }
 
 fn line_to_vec_usize(s: &String) -> Vec<usize> {
@@ -43,7 +38,6 @@ fn part1(input: &Vec<String>) -> usize {
 
 fn try_make_safe(report: &Vec<usize>) -> Vec<usize> {
     let safe: Vec<Vec<usize>> = (0..report.len())
-        .into_iter()
         .map(|i| {
             let mut report = report.clone();
             report.remove(i);

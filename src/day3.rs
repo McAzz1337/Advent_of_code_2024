@@ -1,15 +1,12 @@
 use std::usize;
 
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
 
 use regex::Regex;
 
-pub fn day3() -> PuzzleResult<usize, usize> {
+pub fn day3() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(3);
-    let mut result = PuzzleResult::<usize, usize>::new(3);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::new(3, input, Some(part1), Some(part2))
 }
 
 fn extract_numbers(s: &str) -> (usize, String) {
@@ -23,11 +20,7 @@ fn extract_numbers(s: &str) -> (usize, String) {
         let start = m.find("(").unwrap() + 1;
         let end = m.find(")").unwrap();
         let m = &m[start..end];
-        let nums: Vec<usize> = m
-            .split(",")
-            .into_iter()
-            .map(|s| s.parse::<usize>().unwrap())
-            .collect();
+        let nums: Vec<usize> = m.split(",").map(|s| s.parse::<usize>().unwrap()).collect();
         let end = reg.get(0).map(|m| m.end()).unwrap();
         (nums[0] * nums[1], s[end..].to_string())
     } else {

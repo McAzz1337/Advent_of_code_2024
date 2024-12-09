@@ -1,11 +1,12 @@
 use std::{
     collections::HashSet,
-    fmt::{Display, Write},
+    fmt::Display,
     ops::{Add, Sub},
-    usize, vec,
+    vec,
 };
 
 use crate::{
+    PartFn,
     puzzle_result::PuzzleResult,
     util::{
         file_io::get_input,
@@ -13,12 +14,9 @@ use crate::{
     },
 };
 
-pub fn day8() -> PuzzleResult<usize, usize> {
+pub fn day8() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(8);
-    let mut result = PuzzleResult::<usize, usize>::new(8);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::new(8, input, Some(part1), Some(part2))
 }
 
 type Pos = (usize, usize);
@@ -31,10 +29,6 @@ struct Vec2 {
 }
 
 impl Vec2 {
-    fn new(x: isize, y: isize) -> Vec2 {
-        Vec2 { x, y }
-    }
-
     fn from(pos: &Pos) -> Vec2 {
         Vec2 {
             x: pos.0 as isize,
@@ -47,18 +41,6 @@ impl Vec2 {
             Some((self.x as usize, self.y as usize))
         } else {
             None
-        }
-    }
-
-    fn overlapping(&self, other: &Vec2) -> bool {
-        if self.x == 0 && self.y == 0 {
-            other.overlapping(self)
-        } else if self.x == 0 {
-            let t = other.y / self.y;
-            &self.mul(t) == other
-        } else {
-            let t = other.x / self.x;
-            &self.mul(t) == other
         }
     }
 
@@ -104,16 +86,16 @@ fn group(antenna: &char, grid: &Grid) -> Group {
             .map(|(x, _)| (x, y))
             .collect::<Vec<Pos>>()
     };
-    let group: Vec<Pos> = grid.iter().enumerate().map(filter_map).flatten().collect();
+    let group: Vec<Pos> = grid.iter().enumerate().flat_map(filter_map).collect();
 
-    (antenna.clone(), group)
+    (*antenna, group)
 }
 
 fn create_antinode(group: &Group, grid: &Grid) -> Vec<Pos> {
     let (antenna, positions) = group;
     positions
         .iter()
-        .map(|pos| {
+        .flat_map(|pos| {
             let others: Vec<&Pos> = positions.iter().filter(|p| p != &pos).collect();
             others
                 .iter()
@@ -123,7 +105,6 @@ fn create_antinode(group: &Group, grid: &Grid) -> Vec<Pos> {
                 .filter_map(|v| v.to_pos())
                 .collect::<Vec<Pos>>()
         })
-        .flatten()
         .filter(|v| &grid[v.1][v.0] != antenna)
         .collect()
 }
@@ -145,19 +126,17 @@ fn part1(input: &Vec<String>) -> usize {
     let map = to_matrix(input);
     let antennas: Vec<char> = map
         .iter()
-        .map(|v| {
+        .flat_map(|v| {
             v.iter()
                 .filter(|c| c != &&'.')
-                .map(|c| *c)
+                .copied()
                 .collect::<Vec<char>>()
         })
-        .flatten()
         .collect();
     let groups: HashSet<Group> = antennas.iter().map(|c| group(c, &map)).collect();
     groups
         .iter()
-        .map(|g| create_antinode(g, &map))
-        .flatten()
+        .flat_map(|g| create_antinode(g, &map))
         .collect::<HashSet<Pos>>()
         .len()
 }
@@ -175,20 +154,18 @@ fn continouous(origin: Vec2, direction: Vec2, grid: &Grid) -> Vec<Pos> {
 }
 
 fn create_antinode2(group: &Group, grid: &Grid) -> Vec<Pos> {
-    let (antenna, positions) = group;
+    let (_, positions) = group;
     positions
         .iter()
-        .map(|pos| {
+        .flat_map(|pos| {
             let others: Vec<&Pos> = positions.iter().filter(|p| p != &pos).collect();
             let res = others
                 .iter()
                 .map(|p| Vec2::from(p) - Vec2::from(pos))
-                .map(|v| continouous(Vec2::from(pos), v, grid))
-                .flatten()
+                .flat_map(|v| continouous(Vec2::from(pos), v, grid))
                 .collect::<Vec<Pos>>();
-            [res, vec![pos.clone()]].concat()
+            [res, vec![*pos]].concat()
         })
-        .flatten()
         // .filter(|v| &grid[v.1][v.0] != antenna)
         .collect()
 }
@@ -197,19 +174,17 @@ fn part2(input: &Vec<String>) -> usize {
     let map = to_matrix(input);
     let antennas: Vec<char> = map
         .iter()
-        .map(|v| {
+        .flat_map(|v| {
             v.iter()
                 .filter(|c| c != &&'.')
-                .map(|c| *c)
+                .copied()
                 .collect::<Vec<char>>()
         })
-        .flatten()
         .collect();
     let groups: HashSet<Group> = antennas.iter().map(|c| group(c, &map)).collect();
     groups
         .iter()
-        .map(|g| create_antinode2(g, &map))
-        .flatten()
+        .flat_map(|g| create_antinode2(g, &map))
         .collect::<HashSet<Pos>>()
         .len()
 }
@@ -217,7 +192,7 @@ fn part2(input: &Vec<String>) -> usize {
 mod tests {
     use crate::util::{file_io::get_test_input, util::to_matrix};
 
-    use super::{create_antinode, create_antinode2, group, part1, part2};
+    use super::{create_antinode, group, part1, part2};
 
     #[test]
     fn test_part1() {
@@ -228,7 +203,7 @@ mod tests {
 
     #[test]
     fn test_group() {
-        let input = vec![
+        let input = [
             "............",
             "........0...",
             ".....0......",
@@ -255,7 +230,7 @@ mod tests {
 
     #[test]
     fn test_create_antinode() {
-        let input = vec![
+        let input = [
             "............",
             "........0...",
             ".....0......",

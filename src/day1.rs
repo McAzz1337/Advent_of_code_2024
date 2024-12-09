@@ -1,13 +1,8 @@
-use std::usize;
+use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
 
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
-
-pub fn day1() -> PuzzleResult<usize, usize>         {
+pub fn day1() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(1);
-    let mut result = PuzzleResult::<usize, usize>::new(1);
-    result.result_part_1(part1(&input));
-    result.result_part_1(part2(&input));
-    result
+    PuzzleResult::new(1, input, Some(part1), Some(part2))
 }
 
 fn split_line(s: &String) -> (String, String) {
@@ -39,11 +34,11 @@ fn part1(input: &Vec<String>) -> usize {
 
     left.iter()
         .zip(right.iter())
-        .map(|(a, b)| (*a as isize - *b as isize).abs() as usize)
+        .map(|(a, b)| (*a as isize - *b as isize).unsigned_abs())
         .sum()
 }
 
-fn count_in(x: &usize, v: &Vec<usize>) -> usize {
+fn count_in(x: &usize, v: &[usize]) -> usize {
     v.iter().filter(|y| *y == x).count()
 }
 

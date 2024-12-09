@@ -1,13 +1,15 @@
 use crate::{
-    puzzle_result::PuzzleResult, util::file_io::get_input, util::util::Grid, util::util::to_matrix,
+    PartFn,
+    puzzle_result::PuzzleResult,
+    util::{
+        file_io::get_input,
+        util::{Grid, to_matrix},
+    },
 };
 
-pub fn day4() -> PuzzleResult<usize, usize> {
+pub fn day4() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(4);
-    let mut result = PuzzleResult::<usize, usize>::new(4);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::new(4, input, Some(part1), Some(part2))
 }
 
 type Pos = (usize, usize);
@@ -43,7 +45,7 @@ where
 }
 
 fn check_pos(mat: &Grid, term: &str, pos: Pos) -> usize {
-    let steps = vec![
+    let steps = [
         |x: usize, y: usize| (Some(x + 1), Some(y)), // Right
         |x: usize, y: usize| (Some(x + 1), y.checked_sub(1)), // Top-right diagonal
         |x: usize, y: usize| (Some(x + 1), Some(y + 1)), // Bottom-right diagonal
@@ -75,10 +77,9 @@ fn get_positions(mat: &Grid) -> Vec<Pos> {
 
 fn part1(input: &Vec<String>) -> usize {
     let mat = &to_matrix(input);
-    let positions = get_positions(&mat);
-    positions
+    get_positions(mat)
         .iter()
-        .map(|pos| check_pos(&mat, "XMAS", *pos))
+        .map(|pos| check_pos(mat, "XMAS", *pos))
         .sum()
 }
 
@@ -100,9 +101,9 @@ fn check_x(mat: &Grid, pos: &Pos) -> bool {
     let (x, y) = *pos;
     if y > 0 && y < mat.len() - 1 && x > 0 && x < mat[y].len() - 1 {
         if let Some(ul) = is_part_of_x(mat[y - 1][x - 1]) {
-            if let Some(_) = other_char_of(ul, mat[y + 1][x + 1]) {
+            if other_char_of(ul, mat[y + 1][x + 1]).is_some() {
                 if let Some(ur) = is_part_of_x(mat[y - 1][x + 1]) {
-                    if let Some(_) = other_char_of(ur, mat[y + 1][x - 1]) {
+                    if other_char_of(ur, mat[y + 1][x - 1]).is_some() {
                         true
                     } else {
                         false
@@ -135,7 +136,7 @@ fn get_potential_centers(mat: &Grid) -> Vec<Pos> {
 }
 
 fn part2(input: &Vec<String>) -> usize {
-    let mat = to_matrix(&input);
+    let mat = to_matrix(input);
     let positions = get_potential_centers(&mat);
     positions
         .iter()

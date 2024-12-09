@@ -1,13 +1,10 @@
 use std::collections::HashMap;
 
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
 
-pub fn day5() -> PuzzleResult<usize, usize> {
+pub fn day5() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(5);
-    let mut result = PuzzleResult::<usize, usize>::new(5);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::new(5, input, Some(part1), Some(part2))
 }
 
 type Rule = (usize, usize);
@@ -30,18 +27,18 @@ fn filter_valid_updates(rules: RuleMap, updates: Vec<Update>) -> Vec<Update> {
     updates
         .iter()
         .filter(|u| is_valid(u, &rules))
-        .map(|u| u.clone())
+        .cloned()
         .collect()
 }
 
-fn split_on(s: &String, token: &str) -> Vec<String> {
+fn split_on(s: &str, token: &str) -> Vec<String> {
     s.split(token).map(|s| s.to_string()).collect()
 }
 
 fn vec_to_hashmap(v: Vec<Rule>) -> HashMap<usize, Vec<usize>> {
     let mut res: HashMap<usize, Vec<usize>> = HashMap::new();
     v.iter().for_each(|(k, v)| {
-        if let Some(vec) = res.get_mut(&k) {
+        if let Some(vec) = res.get_mut(k) {
             vec.push(*v);
         } else {
             res.insert(*k, vec![*v]);
@@ -51,7 +48,7 @@ fn vec_to_hashmap(v: Vec<Rule>) -> HashMap<usize, Vec<usize>> {
     res
 }
 
-fn prepare(input: &Vec<String>) -> (Vec<Update>, Vec<Rule>) {
+fn prepare(input: &[String]) -> (Vec<Update>, Vec<Rule>) {
     let (rules, updates): (Vec<String>, Vec<String>) =
         input.iter().cloned().partition(|s| s.contains("|"));
 
@@ -87,18 +84,14 @@ fn part1(input: &Vec<String>) -> usize {
 }
 
 fn out_of_place(key: &usize, to_check: Vec<&usize>, rules: &RuleMap) -> Option<usize> {
-    if let Some(x) = to_check
+    to_check
         .iter()
         .enumerate()
-        .find(|(_, k)| rules.get(k).map_or(false, |v| v.contains(key)))
-    {
-        Some(x.0)
-    } else {
-        None
-    }
+        .find(|(_, k)| rules.get(k).is_some_and(|v| v.contains(key)))
+        .map(|x| x.0)
 }
 
-fn fix_update(index: &usize, update: &Update, rules: &RuleMap, iteration: usize) -> Option<Update> {
+fn fix_update(index: &usize, update: &Update, rules: &RuleMap) -> Option<Update> {
     let to_correct: Vec<(usize, usize)> = update
         .iter()
         .enumerate()
@@ -114,7 +107,7 @@ fn fix_update(index: &usize, update: &Update, rules: &RuleMap, iteration: usize)
             let mut u = update.clone();
             u.swap(*i, *j);
             if !is_valid(&u, rules) {
-                fix_update(index, &u, rules, iteration + 1)
+                fix_update(index, &u, rules)
             } else {
                 Some(u)
             }
@@ -134,7 +127,7 @@ fn part2(input: &Vec<String>) -> usize {
     let updates: Vec<Update> = updates
         .iter()
         .enumerate()
-        .filter_map(|(i, u)| fix_update(&i, u, &rules, 0))
+        .filter_map(|(i, u)| fix_update(&i, u, &rules))
         .collect();
     updates.iter().map(|v| v[v.len() / 2]).sum()
 }

@@ -1,13 +1,8 @@
 use core::panic;
-use std::{
-    collections::HashSet,
-    isize,
-    thread::{self, JoinHandle},
-    time::{self, Duration, Instant},
-    usize,
-};
+use std::collections::HashSet;
 
 use crate::{
+    PartFn,
     puzzle_result::PuzzleResult,
     util::{
         file_io::get_input,
@@ -18,12 +13,9 @@ use crate::{
 type Pos = (isize, isize);
 type Dir = (isize, isize);
 
-pub fn day6() -> PuzzleResult<usize, usize> {
+pub fn day6() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(6);
-    let mut result = PuzzleResult::<usize, usize>::new(6);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::omitted(6, input, Some(part1), Some(part2))
 }
 
 struct Guard<F: Fn(Pos, Dir, &mut Grid)> {
@@ -38,8 +30,8 @@ impl<F: Fn(Pos, Dir, &mut Grid)> Guard<F> {
         let (x, y) = Self::get_guard_pos(grid);
         let sym = grid[y as usize][x as usize];
         Guard {
-            x: x as isize,
-            y: y as isize,
+            x,
+            y,
             dir: Self::get_dir(sym),
             replace,
         }
@@ -109,7 +101,8 @@ impl<F: Fn(Pos, Dir, &mut Grid)> Guard<F> {
     }
 
     fn get_guard_pos(grid: &Grid) -> Pos {
-        grid.iter()
+        *grid
+            .iter()
             .enumerate()
             .filter_map(|(y, v)| {
                 v.iter()
@@ -118,12 +111,11 @@ impl<F: Fn(Pos, Dir, &mut Grid)> Guard<F> {
                     .map(|(x, _)| (x as isize, y as isize))
                     .collect::<Vec<(isize, isize)>>()
                     .first()
-                    .map(|x| *x)
+                    .copied()
             })
             .collect::<Vec<(isize, isize)>>()
             .first()
             .unwrap()
-            .clone()
     }
     fn get_symbol(dir: Dir) -> char {
         match dir {
@@ -161,14 +153,6 @@ fn part1(input: &Vec<String>) -> usize {
     grid.iter()
         .map(|v| v.iter().filter(|c| c == &&'X').count())
         .sum()
-}
-
-fn get_trace(dir: Dir) -> char {
-    match dir {
-        (_, 0) => '-',
-        (0, _) => '|',
-        _ => panic!("asdasd"),
-    }
 }
 
 fn part2(input: &Vec<String>) -> usize {

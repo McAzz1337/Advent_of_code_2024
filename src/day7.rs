@@ -1,16 +1,11 @@
-use std::{result, usize};
+use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
 
-use crate::{puzzle_result::PuzzleResult, util::file_io::get_input};
-
-pub fn day7() -> PuzzleResult<usize, usize> {
+pub fn day7() -> PuzzleResult<PartFn, PartFn, usize, usize> {
     let input = get_input(7);
-    let mut result = PuzzleResult::<usize, usize>::new(7);
-    result.result_part_1(part1(&input));
-    result.result_part_2(part2(&input));
-    result
+    PuzzleResult::omitted(7, input, Some(part1), Some(part2))
 }
 
-fn prepare(input: &Vec<String>) -> Vec<(usize, Vec<usize>)> {
+fn prepare(input: &[String]) -> Vec<(usize, Vec<usize>)> {
     input
         .iter()
         .map(|s| {
@@ -19,7 +14,6 @@ fn prepare(input: &Vec<String>) -> Vec<(usize, Vec<usize>)> {
             let operands: Vec<usize> = split[1]
                 .trim()
                 .split(" ")
-                .into_iter()
                 .map(|s| s.parse::<usize>().unwrap())
                 .collect();
             (result, operands)
