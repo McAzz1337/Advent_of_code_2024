@@ -6,11 +6,11 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+pub mod day9;
 pub mod puzzle_result;
 pub mod util;
 
 use std::{
-    error::{self, Error},
     thread::{self, JoinHandle},
     usize,
 };
@@ -23,16 +23,22 @@ use day5::day5;
 use day6::day6;
 use day7::day7;
 use day8::day8;
+use day9::day9;
 use puzzle_result::PuzzleResult;
 
+pub type PartFn = fn(&Vec<String>) -> usize;
+
 fn main() {
-    let functions = vec![day1, day2, day3, day4, day5, day6, day7, day8];
+    let functions = vec![day1, day2, day3, day4, day5, day6, day7, day8, day9];
 
     thread::spawn(move || {
         print!("thread");
     });
 
-    let threads: Vec<(usize, JoinHandle<PuzzleResult<usize, usize>>)> = functions
+    let threads: Vec<(
+        usize,
+        JoinHandle<PuzzleResult<PartFn, PartFn, usize, usize>>,
+    )> = functions
         .into_iter()
         .enumerate()
         .map(|(i, f)| (i, thread::spawn(move || f())))
@@ -40,7 +46,7 @@ fn main() {
 
     let mut results: Vec<(
         usize,
-        Result<PuzzleResult<usize, usize>, Box<dyn std::any::Any + Send>>,
+        Result<PuzzleResult<PartFn, PartFn, usize, usize>, Box<dyn std::any::Any + Send>>,
     )> = threads
         .into_iter()
         .map(|(i, t)| match t.join() {

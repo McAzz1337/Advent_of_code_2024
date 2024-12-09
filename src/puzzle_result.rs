@@ -1,58 +1,86 @@
 use std::fmt::Display;
 
-pub struct PuzzleResult<T, U>
+pub struct PuzzleResult<F, G, T, U>
 where
     T: ToString + Clone,
     U: ToString + Clone,
+    F: Fn(&Vec<String>) -> T,
+    G: Fn(&Vec<String>) -> U,
 {
     day: i32,
-    result_part_1: Option<T>,
-    result_part_2: Option<U>,
+    input: Vec<String>,
+    part1: Option<F>,
+    part2: Option<G>,
+    omitted: bool,
 }
 
-impl<T, U> PuzzleResult<T, U>
+impl<F, G, T, U> PuzzleResult<F, G, T, U>
 where
     T: ToString + Clone,
     U: ToString + Clone,
+    F: Fn(&Vec<String>) -> T,
+    G: Fn(&Vec<String>) -> U,
 {
-    pub fn new(day: i32) -> PuzzleResult<T, U> {
+    pub fn new(
+        day: i32,
+        input: Vec<String>,
+        part1: Option<F>,
+        part2: Option<G>,
+    ) -> PuzzleResult<F, G, T, U> {
         PuzzleResult {
             day,
-            result_part_1: None,
-            result_part_2: None,
+            input,
+            part1,
+            part2,
+            omitted: false,
         }
     }
 
-    pub fn result_part_1(&mut self, result: T) {
-        self.result_part_1 = Some(result);
-    }
-
-    pub fn result_part_2(&mut self, result: U) {
-        self.result_part_2 = Some(result);
+    pub fn omitted(
+        day: i32,
+        input: Vec<String>,
+        part1: Option<F>,
+        part2: Option<G>,
+    ) -> PuzzleResult<F, G, T, U> {
+        PuzzleResult {
+            day,
+            input,
+            part1,
+            part2,
+            omitted: true,
+        }
     }
 }
 
-impl<T, U> Display for PuzzleResult<T, U>
+impl<F, G, T, U> Display for PuzzleResult<F, G, T, U>
 where
     T: ToString + Clone,
     U: ToString + Clone,
+    F: Fn(&Vec<String>) -> T,
+    G: Fn(&Vec<String>) -> U,
 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let result1 = self.result_part_1.clone().map_or_else(
-            || "PART 1: TO BE SOLVED".to_string(),
-            |x| format!("PART 1: {}", x.to_string()),
-        );
-        let result2 = self.result_part_2.clone().map_or_else(
-            || "PART 2: TO BE SOLVED".to_string(),
-            |x| format!("PART 2: {}", x.to_string()),
-        );
-        let output = String::from("-------DAY ")
-            + self.day.to_string().as_str()
-            + "-------\n\t"
-            + result1.as_str()
-            + "\n\t"
-            + result2.as_str();
+        if self.omitted {
+            let s =
+                String::from("-------DAY ") + self.day.to_string().as_str() + "-------\n\tOmitted";
+            f.write_str(&s)
+        } else {
+            let result1 = self.part1.as_ref().map_or_else(
+                || "PART 1: TO BE SOLVED".to_string(),
+                |f| format!("Part 2 : {}", f(&self.input).to_string()),
+            );
+            let result2 = self.part2.as_ref().map_or_else(
+                || "PART 2: TO BE SOLVED".to_string(),
+                |f| format!("PART 2: {}", f(&self.input).to_string()),
+            );
+            let output = String::from("-------DAY ")
+                + self.day.to_string().as_str()
+                + "-------\n\t"
+                + result1.as_str()
+                + "\n\t"
+                + result2.as_str();
 
-        f.write_str(&output)
+            f.write_str(&output)
+        }
     }
 }
