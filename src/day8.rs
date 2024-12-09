@@ -154,13 +154,12 @@ fn part1(input: &Vec<String>) -> usize {
         .flatten()
         .collect();
     let groups: HashSet<Group> = antennas.iter().map(|c| group(c, &map)).collect();
-    let res = groups
+    groups
         .iter()
         .map(|g| create_antinode(g, &map))
         .flatten()
-        .collect::<HashSet<Pos>>();
-
-    res.len()
+        .collect::<HashSet<Pos>>()
+        .len()
 }
 
 fn continouous(origin: Vec2, direction: Vec2, grid: &Grid) -> Vec<Pos> {
@@ -207,25 +206,12 @@ fn part2(input: &Vec<String>) -> usize {
         .flatten()
         .collect();
     let groups: HashSet<Group> = antennas.iter().map(|c| group(c, &map)).collect();
-    let res = groups
+    groups
         .iter()
         .map(|g| create_antinode2(g, &map))
         .flatten()
-        .collect::<HashSet<Pos>>();
-
-    map.iter().enumerate().for_each(|(y, v)| {
-        v.iter().enumerate().for_each(|(x, c)| {
-            let c = if res.contains(&(x, y)) /*&& c == &'.'*/ {
-                '#'
-            } else {
-                *c
-            };
-            print!("{c}");
-        });
-        println!("");
-    });
-
-    res.len()
+        .collect::<HashSet<Pos>>()
+        .len()
 }
 #[cfg(test)]
 mod tests {
