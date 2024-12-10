@@ -67,7 +67,7 @@ where
         } else {
             let result1 = self.part1.as_ref().map_or_else(
                 || "PART 1: TO BE SOLVED".to_string(),
-                |f| format!("Part 2 : {}", f(&self.input).to_string()),
+                |f| format!("Part 1 : {}", f(&self.input).to_string()),
             );
             let result2 = self.part2.as_ref().map_or_else(
                 || "PART 2: TO BE SOLVED".to_string(),
