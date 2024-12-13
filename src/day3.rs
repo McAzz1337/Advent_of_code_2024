@@ -1,12 +1,11 @@
 use std::usize;
 
-use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult};
 
 use regex::Regex;
 
 pub fn day3() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(3);
-    PuzzleResult::new(3, input, Some(part1), Some(part2))
+    PuzzleResult::new(3, Some(part1), Some(part2))
 }
 
 fn extract_numbers(s: &str) -> (usize, String) {

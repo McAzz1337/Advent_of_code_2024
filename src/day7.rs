@@ -1,8 +1,7 @@
-use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult};
 
 pub fn day7() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(7);
-    PuzzleResult::omitted(7, input, Some(part1), Some(part2))
+    PuzzleResult::omitted(7, Some(part1), Some(part2))
 }
 
 fn prepare(input: &[String]) -> Vec<(usize, Vec<usize>)> {
@@ -14,6 +13,7 @@ fn prepare(input: &[String]) -> Vec<(usize, Vec<usize>)> {
             let operands: Vec<usize> = split[1]
                 .trim()
                 .split(" ")
+                // .into_iter()
                 .map(|s| s.parse::<usize>().unwrap())
                 .collect();
             (result, operands)

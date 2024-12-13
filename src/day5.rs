@@ -1,10 +1,9 @@
 use std::collections::HashMap;
 
-use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult};
 
 pub fn day5() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(5);
-    PuzzleResult::new(5, input, Some(part1), Some(part2))
+    PuzzleResult::omitted(5, Some(part1), Some(part2))
 }
 
 type Rule = (usize, usize);

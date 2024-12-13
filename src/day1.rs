@@ -1,8 +1,7 @@
-use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult};
 
 pub fn day1() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(1);
-    PuzzleResult::new(1, input, Some(part1), Some(part2))
+    PuzzleResult::new(1, Some(part1), Some(part2))
 }
 
 fn split_line(s: &String) -> (String, String) {
@@ -67,7 +66,7 @@ mod tests {
 
     #[test]
     fn test_split_line() {
-        let input = vec!["3   4", "4   3", "2   5", "1   3", "3   9", "3   3"];
+        let input = ["3   4", "4   3", "2   5", "1   3", "3   9", "3   3"];
         let input: Vec<String> = input.iter().map(|s| s.to_string()).collect();
         let res = split_line(&input[0]);
         assert_eq!(res, (3.to_string(), 4.to_string()));

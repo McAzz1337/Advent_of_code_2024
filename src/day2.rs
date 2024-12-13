@@ -1,12 +1,13 @@
-use crate::{PartFn, puzzle_result::PuzzleResult, util::file_io::get_input};
+use crate::{PartFn, puzzle_result::PuzzleResult};
 
 pub fn day2() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(2);
-    PuzzleResult::new(2, input, Some(part1), Some(part2))
+    PuzzleResult::omitted(2, Some(part1), Some(part2))
 }
 
 fn line_to_vec_usize(s: &String) -> Vec<usize> {
-    s.split(" ").map(|s| s.parse::<usize>().unwrap()).collect()
+    s.split(" ")
+        .filter_map(|s| s.parse::<usize>().ok())
+        .collect()
 }
 
 fn is_positave_delta(a: usize, b: &usize) -> bool {

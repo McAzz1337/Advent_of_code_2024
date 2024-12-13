@@ -1,15 +1,11 @@
 use crate::{
     PartFn,
     puzzle_result::PuzzleResult,
-    util::{
-        file_io::get_input,
-        util::{Grid, to_matrix},
-    },
+    util::util::{Grid, to_matrix},
 };
 
 pub fn day4() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(4);
-    PuzzleResult::new(4, input, Some(part1), Some(part2))
+    PuzzleResult::new(4, Some(part1), Some(part2))
 }
 
 type Pos = (usize, usize);

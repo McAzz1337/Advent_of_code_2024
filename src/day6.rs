@@ -4,18 +4,14 @@ use std::collections::HashSet;
 use crate::{
     PartFn,
     puzzle_result::PuzzleResult,
-    util::{
-        file_io::get_input,
-        util::{Grid, to_matrix},
-    },
+    util::util::{Grid, to_matrix},
 };
 
 type Pos = (isize, isize);
 type Dir = (isize, isize);
 
 pub fn day6() -> PuzzleResult<PartFn, PartFn, usize, usize> {
-    let input = get_input(6);
-    PuzzleResult::omitted(6, input, Some(part1), Some(part2))
+    PuzzleResult::omitted(6, Some(part1), Some(part2))
 }
 
 struct Guard<F: Fn(Pos, Dir, &mut Grid)> {
