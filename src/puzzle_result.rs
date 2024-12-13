@@ -1,3 +1,4 @@
+use crate::util::file_io::get_input;
 use std::fmt::Display;
 
 pub struct PuzzleResult<F, G, T, U>
@@ -7,7 +8,7 @@ where
     F: Fn(&Vec<String>) -> T,
     G: Fn(&Vec<String>) -> U,
 {
-    day: i32,
+    day: u32,
     input: Vec<String>,
     part1: Option<F>,
     part2: Option<G>,
@@ -21,12 +22,8 @@ where
     F: Fn(&Vec<String>) -> T,
     G: Fn(&Vec<String>) -> U,
 {
-    pub fn new(
-        day: i32,
-        input: Vec<String>,
-        part1: Option<F>,
-        part2: Option<G>,
-    ) -> PuzzleResult<F, G, T, U> {
+    pub fn new(day: u32, part1: Option<F>, part2: Option<G>) -> PuzzleResult<F, G, T, U> {
+        let input = get_input(day);
         PuzzleResult {
             day,
             input,
@@ -36,12 +33,8 @@ where
         }
     }
 
-    pub fn omitted(
-        day: i32,
-        input: Vec<String>,
-        part1: Option<F>,
-        part2: Option<G>,
-    ) -> PuzzleResult<F, G, T, U> {
+    pub fn omitted(day: u32, part1: Option<F>, part2: Option<G>) -> PuzzleResult<F, G, T, U> {
+        let input = get_input(day);
         PuzzleResult {
             day,
             input,
