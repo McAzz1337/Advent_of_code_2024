@@ -1,4 +1,7 @@
 pub mod day1;
+pub mod day10;
+pub mod day11;
+pub mod day12;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -10,10 +13,7 @@ pub mod day9;
 pub mod puzzle_result;
 pub mod util;
 
-use std::{
-    thread::{self, JoinHandle},
-    usize,
-};
+use std::thread::{self, JoinHandle};
 
 use day1::day1;
 use day2::day2;
@@ -24,12 +24,17 @@ use day6::day6;
 use day7::day7;
 use day8::day8;
 use day9::day9;
+use day10::day10;
+use day11::day11;
+use day12::day12;
 use puzzle_result::PuzzleResult;
 
 pub type PartFn = fn(&Vec<String>) -> usize;
 
 fn main() {
-    let functions = vec![day1, day2, day3, day4, day5, day6, day7, day8, day9];
+    let functions = vec![
+        day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12,
+    ];
 
     thread::spawn(move || {
         print!("thread");
